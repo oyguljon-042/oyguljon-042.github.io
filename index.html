@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oyguljon | Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:oklch(0.16 0.04 310);--card:oklch(1 0 0 / 6%);--border:oklch(1 0 0 / 12%);
+--text:oklch(0.97 0.008 310);--muted:oklch(0.75 0.04 315);
+--v:oklch(0.70 0.25 330);--b:oklch(0.68 0.22 290);--c:oklch(0.85 0.16 180);
+--grad:linear-gradient(115deg,var(--v),var(--b) 55%,var(--c));}
+:root[data-theme="light"]{--bg:oklch(0.98 0.01 320);--card:oklch(1 0 0 / 70%);--border:oklch(0.2 0.04 310 / 12%);
+--text:oklch(0.2 0.05 310);--muted:oklch(0.48 0.04 315);
+--v:oklch(0.60 0.25 330);--b:oklch(0.58 0.22 290);--c:oklch(0.65 0.15 180);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;overflow-x:hidden;transition:background .4s,color .4s;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+h1,h2,h3,nav b{font-family:'Space Grotesk',system-ui,sans-serif;letter-spacing:-.02em;}
+.tag,.tl-item b,.typed,.stat span,time{font-family:'JetBrains Mono',ui-monospace,monospace;}
+@keyframes shimmer{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+.title,.hero h1,nav b,.stat b{background:var(--grad);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 3s linear infinite;}
+canvas#bg{position:fixed;inset:0;z-index:0;opacity:.55;}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 24px;}
+section{padding:90px 0;}
+h2.title{font-size:clamp(26px,4vw,40px);margin-bottom:36px;text-align:center;}
+p.sub{text-align:center;color:var(--muted);margin-top:-24px;margin-bottom:36px;}
+nav{position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);background:color-mix(in oklab,var(--bg) 75%,transparent);
+border-bottom:1px solid var(--border);padding:14px 0;}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+nav .links{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;}
+nav a{color:var(--muted);text-decoration:none;transition:color .3s;}
+nav a:hover{color:var(--v);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.langsw{display:flex;border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.langsw button{background:none;border:none;color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace;padding:5px 10px;cursor:pointer;}
+.langsw button.active{background:var(--v);color:#fff;}
+.themebtn{border:1px solid var(--border);background:var(--card);border-radius:50%;width:32px;height:32px;cursor:pointer;color:var(--text);font-size:15px;}
+.hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;}
+.badge{border:1px solid var(--border);border-radius:30px;padding:6px 18px;font-size:13px;color:var(--muted);background:var(--card);box-shadow:0 4px 15px rgba(230,100,200,0.1);}
+.hero h1{font-size:clamp(38px,7vw,70px);margin-top:20px;}
+.typed{font-size:clamp(16px,2.2vw,20px);color:var(--muted);margin-top:14px;min-height:28px;}
+.cursor{border-right:2px solid var(--v);animation:blink .8s infinite;}
+@keyframes blink{50%{border-color:transparent;}}
+.stats{display:flex;gap:40px;margin-top:44px;flex-wrap:wrap;justify-content:center;}
+.stat b{font-size:clamp(26px,4vw,36px);display:block;}
+.stat span{color:var(--c);font-size:12px;text-shadow:0 0 8px color-mix(in oklab,var(--c) 60%,transparent);
+animation:statglow 2.4s ease-in-out infinite;}
+@keyframes statglow{0%,100%{opacity:.65;}50%{opacity:1;text-shadow:0 0 14px color-mix(in oklab,var(--c) 80%,transparent);}}
+.reveal{opacity:0;transform:translateY(36px);transition:all .7s cubic-bezier(.2,.7,.3,1);}
+.reveal.show{opacity:1;transform:translateY(0);}
+.rocket{position:fixed;font-size:26px;left:10%;top:50%;z-index:50;pointer-events:none;
+transform:translate(-50%,-50%);will-change:left,top;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;position:relative;z-index:1;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;backdrop-filter:blur(10px);
+transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease,border-color .35s ease;}
+.card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--v);
+box-shadow:0 0 0 1px color-mix(in oklab,var(--v) 35%,transparent),0 18px 60px -20px color-mix(in oklab,var(--v) 55%,transparent);}
+.card .emoji{font-size:30px;}
+.card h3{margin:10px 0 6px;font-size:17px;}
+.card p{color:var(--muted);font-size:13px;margin-bottom:10px;}
+.tl{position:relative;padding-left:28px;border-left:2px solid var(--border);max-width:700px;margin:0 auto;}
+.tl-item{margin-bottom:30px;position:relative;}
+.tl-item::before{content:'';position:absolute;left:-36px;top:2px;width:13px;height:13px;border-radius:50%;background:var(--grad);}
+.tl-item b{color:var(--c);font-size:13px;}
+.tl-item h3{margin:4px 0;font-size:16px;}
+.tl-item p{color:var(--muted);font-size:14px;}
+.skill{margin-bottom:16px;}
+.skill .row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;}
+.bar{height:8px;border-radius:6px;background:var(--border);overflow:hidden;}
+.bar i{display:block;height:100%;width:0;border-radius:6px;background:var(--grad);transition:width 1.3s ease;}
+.skillgrid{display:grid;gap:14px;max-width:700px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+.about-grid{display:grid;gap:20px;grid-template-columns:3fr 2fr;}
+@media(max-width:700px){.about-grid{grid-template-columns:1fr;}}
+.about-grid .card p{color:var(--text);font-size:15px;line-height:1.6;}
+.about-grid ul{list-style:none;margin-top:10px;}
+.about-grid li{color:var(--muted);font-size:13px;margin-bottom:8px;padding-left:16px;position:relative;}
+.about-grid li::before{content:'🌸';position:absolute;left:0;font-size:10px;}
+.future{position:relative;}
+.future .badge2{position:absolute;top:14px;right:14px;font-size:11px;border:1px solid var(--v);color:var(--v);border-radius:20px;padding:2px 8px;}
+
+/* CONTACT SECTION - NAFIS QIZLAR USLUBIDA */
+#contact{
+  position:relative;
+  text-align:center;
+  overflow:hidden;
+  padding:100px 0;
+}
+.contact-card {
+  position: relative;
+  z-index: 2;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 44px 24px;
+  backdrop-filter: blur(14px);
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 20px 50px rgba(180, 50, 150, 0.15);
+  animation: floatCard 4.5s ease-in-out infinite;
+}
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.contact-avatar {
+  width: 95px;
+  height: 95px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 2px solid var(--v);
+  box-shadow: 0 0 25px color-mix(in oklab, var(--v) 60%, transparent);
+  animation: avatarPulse 3s ease-in-out infinite;
+}
+@keyframes avatarPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 20px color-mix(in oklab, var(--v) 50%, transparent); }
+  50% { transform: scale(1.06); box-shadow: 0 0 35px color-mix(in oklab, var(--c) 70%, transparent); }
+}
+svg.net{position:absolute;inset:0;width:100%;height:100%;opacity:.3;z-index:0;}
+.net circle{animation:pulse 3s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+.cbtns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:28px;position:relative;z-index:1;}
+.cbtn{
+  padding:12px 30px;
+  border-radius:30px;
+  border:1px solid var(--border);
+  color:var(--text);
+  text-decoration:none;
+  background:var(--card);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all .3s ease;
+  animation: floatBtn 3s ease-in-out infinite alternate;
+}
+.cbtn:nth-child(2) { animation-delay: 1.5s; }
+@keyframes floatBtn {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+.cbtn:hover{
+  box-shadow:0 0 25px color-mix(in oklab,var(--v) 70%,transparent);
+  border-color:var(--v);
+  transform: translateY(-8px) scale(1.05) !important;
+}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:26px 0;position:relative;z-index:1;}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="rocket">✨</div>
+
+<nav><div class="wrap">
+  <b>&lt;Oyguljon /&gt;</b>
+  <div class="links" id="navlinks"></div>
+  <div class="nav-right">
+    <div class="langsw" id="langsw">
+      <button data-l="uz">UZ</button><button data-l="ru">RU</button><button data-l="en">EN</button>
+    </div>
+    <button class="themebtn" id="themebtn">🌙</button>
+  </div>
+</div></nav>
+
+<section class="hero"><div class="wrap">
+  <span class="badge" id="badge"></span>
+  <h1>Oyguljon</h1>
+  <div class="typed"><span id="tw"></span><span class="cursor"></span></div>
+  <p id="herorole" style="color:var(--muted);margin-top:10px;"></p>
+  <div class="stats">
+    <div class="stat"><b data-t="100">0</b><span id="s1"></span></div>
+    <div class="stat"><b data-t="14">0</b><span id="s2"></span></div>
+    <div class="stat"><b data-t="5">0</b><span id="s3"></span></div>
+    <div class="stat"><b data-t="800">0</b><span id="s4"></span></div>
+  </div>
+  <div style="margin-top:36px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
+    <a href="#about" class="cbtn" style="background:var(--v);color:#fff;border:none;" id="ctaAbout"></a>
+    <a href="#contact" class="cbtn" id="ctaContact"></a>
+  </div>
+</div></section>
+
+<section id="roadmap"><div class="wrap"><h2 class="title reveal" id="rmTitle"></h2><p class="sub reveal" id="rmSub"></p>
+  <div class="tl" id="tl"></div></div></section>
+
+<section id="skills"><div class="wrap"><h2 class="title reveal" id="skTitle"></h2><p class="sub reveal" id="skSub"></p>
+  <div class="skillgrid" id="skillgrid"></div></div></section>
+
+<section id="about"><div class="wrap"><h2 class="title reveal" id="abTitle"></h2>
+  <div class="about-grid">
+    <div class="card reveal"><p id="abText"></p></div>
+    <div class="card reveal"><h3 style="font-size:15px;" id="certTitle"></h3><ul id="certs"></ul>
+    </div>
+  </div></div></section>
+
+<section id="future"><div class="wrap"><h2 class="title reveal" id="futTitle"></h2><p class="sub reveal" id="futSub"></p>
+  <div class="grid" id="futuregrid"></div></div></section>
+
+<section id="contact">
+  <svg class="net" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+    <line x1="50" y1="50" x2="300" y2="150" stroke="#e056fd"/><line x1="300" y1="150" x2="600" y2="80" stroke="#686de0"/>
+    <line x1="300" y1="150" x2="450" y2="320" stroke="#22a6b3"/><line x1="600" y1="80" x2="750" y2="250" stroke="#e056fd"/>
+    <circle cx="50" cy="50" r="5" fill="#e056fd"/><circle cx="300" cy="150" r="6" fill="#686de0"/>
+    <circle cx="600" cy="80" r="5" fill="#22a6b3"/><circle cx="450" cy="320" r="5" fill="#e056fd"/>
+  </svg>
+  <div class="wrap">
+    <div class="contact-card reveal">
+      <!-- Oyguljon uchun chiroyli qiz bola avatari -->
+      <img class="contact-avatar" src="https://api.dicebear.com/7.x/adventurer/svg?seed=Oyguljon&hair=long16,long19&hairColor=362c47" alt="Oyguljon Avatar">
+      <h2 class="title" id="ctTitle" style="margin-bottom:12px;"></h2>
+      <p id="ctSub" style="color:var(--muted);max-width:480px;margin:0 auto;"></p>
+      <div class="cbtns">
+        <a class="cbtn" href=:sardorbekqurbondurdiyev490@gmail.com>✉️️ Email</a>
+        <a class="cbtn" href="https://github.com/oyguljon-042" target="_blank">🐙 GitHub</a>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<footer id="footer"></footer>
+
+<script>
+const ui={
+ navRoadmap:{uz:"Yo'l xaritam",ru:"Мой путь",en:"Roadmap"},
+ navSkills:{uz:"Ko'nikmalar",ru:"Навыки",en:"Skills"},
+ navAbout:{uz:"Men haqimda",ru:"Обо мне",en:"About"},
+ navContact:{uz:"Hamkorlik",ru:"Контакты",en:"Contact"},
+ heroBadge:{uz:"Frontend & AI Dasturchi Qiz",ru:"Frontend & AI Разработчица",en:"Frontend & AI Developer"},
+ heroRole:{uz:"Nafis dizaynli veb-ilovalar va AI yechimlar yarataman",ru:"Создаю эстетичные веб-приложения и AI-решения",en:"I build elegant web apps and AI solutions"},
+ ctaAbout:{uz:"Men haqimda →",ru:"Обо мне →",en:"About me →"},
+ ctaContact:{uz:"Bog'lanish",ru:"Связаться",en:"Get in touch"},
+ s1:{uz:"+ ta topshiriq",ru:"+ задач",en:"+ tasks completed"},
+ s2:{uz:"ta texnologiya",ru:"технологий",en:"technologies"},
+ s3:{uz:"ta interaktiv loyiha",ru:"интерактивных проектов",en:"interactive projects"},
+ s4:{uz:"+ soat kod yozish",ru:"+ часов кодинга",en:"+ hours of coding"},
+ rmTitle:{uz:"Yo'l xaritam",ru:"Мой путь",en:"My roadmap"},
+ rmSub:{uz:"Dasturlash sohasidagi rivojlanish bosqichlarim",ru:"Этапы моего развития в IT",en:"Milestones of my IT journey"},
+ skTitle:{uz:"Ko'nikmalarim",ru:"Мои навыки",en:"My skills"},
+ skSub:{uz:"Har kuni yangi bilimlar egallayman",ru:"Каждый день изучаю новое",en:"Learning new skills every day"},
+ abTitle:{uz:"Men haqimda",ru:"Обо мне",en:"About me"},
+ abText:{uz:"Salom! Men Oyguljonman. Dasturlash men uchun ijod va zamonaviy g'oyalarni hayotga tatbiq etish vositasidir. Web-dasturlash va Sun'iy Intellekt texnologiyalariga juda qiziqaman. Har bir yaratgan saytim va loyihamda nafislik, qulaylik hamda yuqori sifatga e'tibor qarataman. Maqsadim — AT sohasida yetuk mutaxassis bo'lish va foydali mahsulotlar yaratish.",
+   ru:"Привет! Я Ойгулжон. Программирование для меня — это творчество и воплощение идей. Я увлекаюсь веб-разработкой и ИИ. В каждом проекте стремлюсь к эстетике и качеству.",
+   en:"Hi! I'm Oyguljon. Coding is my creative way of bringing ideas to life. I love web development and AI, always striving for elegance and quality in every project."},
+ certTitle:{uz:"Sertifikatlar va yutuqlar",ru:"Сертификаты и достижения",en:"Certificates & achievements"},
+ futTitle:{uz:"Kelajak rejam",ru:"Планы на будущее",en:"What's next"},
+ futSub:{uz:"Hozirda ustida ishlayotgan g'oyalarim",ru:"Идеи, над которыми я работаю",en:"Ideas I'm currently working on"},
+ soon:{uz:"Tez orada",ru:"Скоро",en:"Soon"},
+ ctTitle:{uz:"Keling, birga muloqot qilaylik!",ru:"Давайте свяжемся!",en:"Let's connect!"},
+ ctSub:{uz:"G'oyangiz bormi yoki taklifingiz bormi? Bemalol yozing.",ru:"Есть идея или предложение? Пишите с удовольствием.",en:"Got an idea or proposal? Feel free to write."},
+ footer:{uz:"Oyguljon tomonidan mehr va kod bilan yaratildi",ru:"Создано Ойгулжон с любовью и кодом",en:"Built by Oyguljon with love and code"},
+};
+
+const tl=[
+{y:"2023",t:{uz:"Dastlabki qadam",ru:"Первый шаг",en:"First step"},d:{uz:"HTML/CSS va veb-dizayn asoslarini o'rgandim.",ru:"Изучила HTML/CSS и основы веб-дизайна.",en:"Learned HTML/CSS and web design basics."}},
+{y:"2024",t:{uz:"JavaScript va Mantiq",ru:"JavaScript и логика",en:"JavaScript & Logic"},d:{uz:"Mantiqiy dasturlash va interaktiv botlar yaratishni boshladim.",ru:"Начала создавать интерактивные проекты.",en:"Started creating interactive logic and bots."}},
+{y:"2025",t:{uz:"React va Zamonaviy UI",ru:"React и современный UI",en:"React & Modern UI"},d:{uz:"Frontend freymvorklari va zamonaviy komponentlar bilan ishlashga o'tdim.",ru:"Перешла на React и современный UI.",en:"Moved to React and modern UI framework."}},
+{y:"2026",t:{uz:"AI va Web Birlashmasi",ru:"ИИ и Веб",en:"AI & Web"},d:{uz:"Sun'iy intellekt integratsiyasiga ega chiroyli va foydali ilovalar yaratmoqdaman.",ru:"Создаю веб-приложения с ИИ.",en:"Building web apps integrated with AI."}}];
+
+const skills=[["React",85],["TypeScript",78],["JavaScript",88],["Tailwind CSS",90],["Git & GitHub",80],["AI / LLM API",75],["HTML / CSS",95],["UI/UX Design",82]];
+const certs=[{uz:"IT Park — Frontend Development",ru:"IT Park — Frontend Development",en:"IT Park — Frontend Development"},
+{uz:"Ingliz tili sertifikati — B1/B2",ru:"Сертификат английского языка — B1/B2",en:"English Language Certificate — B1/B2"},
+{uz:"Modern Web Design Bootcamp",ru:"Курс современного веб-дизайна",en:"Modern Web Design Bootcamp"}];
+
+const future=[{e:"🎀",t:{uz:"AI Beauty & Style",ru:"AI Beauty & Style",en:"AI Beauty & Style"},d:{uz:"Shaxsiy uslub va stilni tahlil qilib beruvchi aqlli AI yordamchi.",ru:"Умный ИИ-помощник стиля.",en:"Smart AI style assistant."}},
+{e:"📚",t:{uz:"O'quv Platformasi",ru:"Учебная платформа",en:"Learning Platform"},d:{uz:"Qizlar uchun dasturlashni interaktiv va qiziqarli o'rgatuvchi loyiha.",ru:"Интерактивная платформа обучения.",en:"An interactive learning platform."}}];
+
+let lang='uz';
+function tr(o){return o[lang]||o.uz;}
+function render(){
+  document.documentElement.lang=lang;
+  document.getElementById('navlinks').innerHTML=['navRoadmap#roadmap','navSkills#skills','navAbout#about','navContact#contact']
+    .map(p=>{const[k,h]=p.split('#');return `<a href="#${h}">${tr(ui[k])}</a>`;}).join('');
+  document.getElementById('badge').textContent=tr(ui.heroBadge);
+  document.getElementById('herorole').textContent=tr(ui.heroRole);
+  document.getElementById('ctaAbout').textContent=tr(ui.ctaAbout);
+  document.getElementById('ctaContact').textContent=tr(ui.ctaContact);
+  document.getElementById('s1').textContent=tr(ui.s1);document.getElementById('s2').textContent=tr(ui.s2);
+  document.getElementById('s3').textContent=tr(ui.s3);document.getElementById('s4').textContent=tr(ui.s4);
+  document.getElementById('rmTitle').textContent=tr(ui.rmTitle);document.getElementById('rmSub').textContent=tr(ui.rmSub);
+  document.getElementById('skTitle').textContent=tr(ui.skTitle);document.getElementById('skSub').textContent=tr(ui.skSub);
+  document.getElementById('abTitle').textContent=tr(ui.abTitle);document.getElementById('abText').textContent=tr(ui.abText);
+  document.getElementById('certTitle').textContent=tr(ui.certTitle);
+  document.getElementById('futTitle').textContent=tr(ui.futTitle);document.getElementById('futSub').textContent=tr(ui.futSub);
+  document.getElementById('ctTitle').textContent=tr(ui.ctTitle);document.getElementById('ctSub').textContent=tr(ui.ctSub);
+  document.getElementById('footer').textContent="© 2026 "+tr(ui.footer);
+  document.getElementById('tl').innerHTML=tl.map(i=>`<div class="tl-item reveal show"><b>${i.y}</b><h3>${tr(i.t)}</h3><p>${tr(i.d)}</p></div>`).join('');
+  document.getElementById('skillgrid').innerHTML=skills.map(([n,l])=>`<div class="skill reveal show card"><div class="row"><span>${n}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--muted)">${l}%</span></div><div class="bar"><i data-w="${l}" style="width:${l}%"></i></div></div>`).join('');
+  document.getElementById('certs').innerHTML=certs.map(c=>`<li>${tr(c)}</li>`).join('');
+  document.getElementById('futuregrid').innerHTML=future.map(f=>`<div class="card future reveal show"><span class="badge2">${tr(ui.soon)}</span><div style="font-size:28px">${f.e}</div><h3>${tr(f.t)}</h3><p style="color:var(--muted);font-size:13px;margin-top:6px;">${tr(f.d)}</p></div>`).join('');
+  document.querySelectorAll('#langsw button').forEach(b=>b.classList.toggle('active',b.dataset.l===lang));
+}
+document.getElementById('langsw').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return; lang=b.dataset.l; render();
+});
+const themebtn=document.getElementById('themebtn');
+try{ if(localStorage.getItem('theme')==='light'){document.documentElement.dataset.theme='light';themebtn.textContent='☀️';} }catch(e){}
+themebtn.addEventListener('click',()=>{
+  const light=document.documentElement.dataset.theme==='light';
+  document.documentElement.dataset.theme=light?'':'light';
+  themebtn.textContent=light?'🌙':'☀️';
+  try{localStorage.setItem('theme',light?'dark':'light');}catch(e){}
+});
+render();
+
+const phrases={uz:["Salom, men Oyguljonman...","Frontend & AI Dasturchiman","Nafis veb-saytlar yarataman","Maqsadim — IT sohasida yuksalish"],
+ru:["Привет, я Ойгулжон...","Frontend & AI Разработчица","Создаю красивые веб-сайты","Цель — успехи в IT"],
+en:["Hi, I'm Oyguljon...","Frontend & AI Developer","Creating elegant web apps","Goal — Excellence in IT"]};
+const twEl=document.getElementById('tw');let pi=0,ci=0,del=false;
+function type(){const arr=phrases[lang]||phrases.uz;const cur=arr[pi%arr.length];
+twEl.textContent=del?cur.substring(0,ci--):cur.substring(0,ci++);
+let s=del?35:70;if(!del&&ci>cur.length){s=1500;del=true;}else if(del&&ci<0){del=false;pi++;ci=0;s=300;}
+setTimeout(type,s);} type();
+
+const obs=new IntersectionObserver(es=>es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('show'),i*60);obs.unobserve(e.target);}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(x=>obs.observe(x));
+document.querySelectorAll('.stat b').forEach(b=>{const t=+b.dataset.t;let c=0;const iv=setInterval(()=>{c+=Math.ceil(t/40);if(c>=t){c=t;clearInterval(iv);}b.textContent=c;},30);});
+
+const canvas=document.getElementById('bg'),ctx=canvas.getContext('2d');
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;} resize();addEventListener('resize',resize);
+const stars=Array.from({length:120},()=>({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.4+.3,tw:Math.random()*Math.PI*2}));
+let t=0;
+function draw(){
+ t+=0.006;
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ stars.forEach(s=>{
+   const alpha=.5+.5*Math.sin(t*2+s.tw);
+   ctx.beginPath();ctx.arc((s.x/2000)*canvas.width,(s.y/2000)*canvas.height,s.r,0,7);
+   ctx.fillStyle=`rgba(235, 150, 220, ${alpha*.7})`;ctx.fill();
+ });
+ requestAnimationFrame(draw);
+}
+draw();
+
+(function(){
+ const rocket=document.querySelector('.rocket');
+ let target={x:innerWidth*0.1,y:innerHeight*0.5};
+ document.addEventListener('mousemove',e=>{ target.x=e.clientX; target.y=e.clientY; });
+ function loop(){
+   const speed=0.14;
+   rocket._tx=rocket._tx??target.x; rocket._ty=rocket._ty??target.y;
+   rocket._tx += (target.x - rocket._tx)*speed;
+   rocket._ty += (target.y - rocket._ty)*speed;
+   rocket.style.left=rocket._tx+'px'; rocket.style.top=rocket._ty+'px';
+   requestAnimationFrame(loop);
+ }
+ loop();
+})();
+</script>
+</body>
+</html>
